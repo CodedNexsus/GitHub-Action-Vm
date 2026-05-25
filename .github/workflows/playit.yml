@@ -15,12 +15,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Setup playit
+      - name: Setup and show token
         run: |
           sudo usermod -aG playit $USER
-          sg playit -c "playit setup"
-      - name: Show token
-        run: |
-          SECRET_PATH=$(playit secret-path)
-          echo "Secret path: $SECRET_PATH"
-          sudo cat "$SECRET_PATH"
+          sg playit -c "playit setup && echo '--- Secret ---' && SECRET_PATH=\$(playit secret-path) && echo \"Secret path: \$SECRET_PATH\" && sudo cat \"\$SECRET_PATH\""
