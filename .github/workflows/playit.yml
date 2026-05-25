@@ -21,3 +21,5 @@ jobs:
           sudo systemctl restart playit
           sleep 2
           sudo playit status
+      - name: Keep agent running
+        run: sleep 36000
