@@ -15,11 +15,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Write secret key and start
+      - name: Write secret key and run agent
         run: |
           echo 'secret_key = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
-          sudo systemctl restart playit
-          sleep 2
-          sudo playit status
-      - name: Keep agent running
-        run: sleep 36000
+          sudo systemctl stop playit
+          sudo playit
