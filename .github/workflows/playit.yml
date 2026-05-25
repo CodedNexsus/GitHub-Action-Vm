@@ -1,0 +1,19 @@
+name: Install Playit
+
+on:
+  workflow_dispatch:
+
+jobs:
+  install-playit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Add playit GPG key
+        run: |
+          curl -SsL https://playit-cloud.github.io/ppa/key.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/playit.gpg >/dev/null
+          echo "deb [signed-by=/etc/apt/trusted.gpg.d/playit.gpg] https://playit-cloud.github.io/ppa/data ./" | sudo tee /etc/apt/sources.list.d/playit-cloud.list
+      - name: Install playit
+        run: |
+          sudo apt update
+          sudo apt install -y playit
+      - name: Run playit --help
+        run: playit --help
