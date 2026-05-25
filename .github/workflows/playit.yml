@@ -15,9 +15,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Add user to playit group
+      - name: Setup playit
         run: |
           sudo usermod -aG playit $USER
-          newgrp playit
-      - name: Run playit setup
-        run: playit setup
+          sg playit -c "playit setup"
