@@ -28,16 +28,21 @@ jobs:
             -H "AccessKey: e9fb3b25-d58b-472f-9b5497b00fe3-8d73-409c" \
             "https://storage.bunnycdn.com/mcserver1001/mc_server.zip"
           echo "Download complete"
-      - name: Unzip server files
+      - name: Unzip and list server files
         run: |
           mkdir -p /tmp/mcserver
           unzip -o /tmp/mc_server.zip -d /tmp/mcserver
-          echo "Unzipped to /tmp/mcserver"
+          echo "=== Listing /tmp/mcserver ==="
+          ls -la /tmp/mcserver
+          echo "=== Recursive listing ==="
+          ls -R /tmp/mcserver | head -50
       - name: Run PaperMC server for 5h 30m
         timeout-minutes: 350
         run: |
           cd /tmp/mcserver
-          timeout 330m java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper-26.1.2-65.jar --nogui
+          JAR=$(find /tmp/mcserver -name "paper-*.jar" -type f 2>/dev/null | head -1)
+          echo "Found jar: $JAR"
+          timeout 330m java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar "$JAR" --nogui
       - name: Wait 15 seconds
         run: sleep 15
       - name: Zip server directory
