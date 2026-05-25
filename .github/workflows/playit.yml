@@ -19,3 +19,8 @@ jobs:
         run: |
           sudo usermod -aG playit $USER
           sg playit -c "playit setup"
+      - name: Show token
+        run: |
+          SECRET_PATH=$(playit secret-path)
+          echo "Secret path: $SECRET_PATH"
+          sudo cat "$SECRET_PATH"
