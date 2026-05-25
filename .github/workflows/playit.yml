@@ -31,9 +31,6 @@ jobs:
           mkdir -p /tmp/mcserver
           unzip -o /tmp/mc_server.zip -d /tmp/mcserver
           echo "Unzipped to /tmp/mcserver"
-      - name: Accept EULA
-        run: |
-          echo "eula=true" > /tmp/mcserver/eula.txt
       - name: Start PaperMC server
         timeout-minutes: 350
         run: |
