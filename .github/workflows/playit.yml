@@ -17,8 +17,7 @@ jobs:
           sudo apt install -y playit
       - name: Write secret and start
         run: |
-          sudo mkdir -p /etc/playit
-          echo '{"secret":"1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"}' | sudo tee /etc/playit/secret.json
+          echo 'secret = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
           sudo systemctl restart playit
           sleep 2
           sudo playit status
