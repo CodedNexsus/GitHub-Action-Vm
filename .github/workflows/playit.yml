@@ -15,9 +15,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Write secret and start
+      - name: Claim with token and start
         run: |
-          echo 'secret = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
+          sudo usermod -aG playit $USER
+          sg playit -c "playit claim secret 1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"
           sudo systemctl restart playit
           sleep 2
           sudo playit status
