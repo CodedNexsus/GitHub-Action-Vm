@@ -1,4 +1,4 @@
-name: Install Playit
+name: Install Playit & Run MC Server
 
 on:
   workflow_dispatch:
@@ -15,8 +15,27 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Write secret key and run agent
+      - name: Write secret key and start playit agent in background
         run: |
           echo 'secret_key = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
           sudo systemctl restart playit
-          sudo playit -s attach
+          nohup sudo playit -s attach > /tmp/playit.log 2>&1 &
+          sleep 3
+          echo "Playit agent started in background"
+      - name: Download mc_server.zip
+        run: |
+          curl -L -o /tmp/mc_server.zip "https://mcserver1984.b-cdn.net/mc_server.zip"
+          echo "Download complete"
+      - name: Unzip server files
+        run: |
+          mkdir -p /tmp/mcserver
+          unzip -o /tmp/mc_server.zip -d /tmp/mcserver
+          echo "Unzipped to /tmp/mcserver"
+      - name: Accept EULA
+        run: |
+          echo "eula=true" > /tmp/mcserver/eula.txt
+      - name: Start PaperMC server
+        timeout-minutes: 350
+        run: |
+          cd /tmp/mcserver
+          java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar --nogui
