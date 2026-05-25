@@ -15,5 +15,5 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Run playit --help
-        run: playit --help
+      - name: Run playit setup
+        run: playit setup
