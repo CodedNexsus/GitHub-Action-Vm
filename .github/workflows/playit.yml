@@ -18,5 +18,5 @@ jobs:
       - name: Write secret key and run agent
         run: |
           echo 'secret_key = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
-          sudo systemctl stop playit
-          sudo playit
+          sudo systemctl restart playit
+          sudo playit attach
