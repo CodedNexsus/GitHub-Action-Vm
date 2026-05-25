@@ -33,6 +33,11 @@ jobs:
           rm -rf /tmp/mc_server
           unzip -o /tmp/mc_server.zip -d /tmp/
           echo "Unzipped to /tmp/mc_server/"
+      - name: Setup Java 26
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '26'
       - name: Run PaperMC server for 5h 30m
         timeout-minutes: 350
         run: |
