@@ -15,7 +15,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Setup and show token
+      - name: Claim token and start
         run: |
-          sudo usermod -aG playit $USER
-          sg playit -c "playit setup && echo '--- Secret ---' && SECRET_PATH=\$(playit secret-path) && echo \"Secret path: \$SECRET_PATH\" && sudo cat \"\$SECRET_PATH\""
+          sudo playit claim 1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4
+          sudo playit start
+          sleep 2
+          sudo playit status
