@@ -22,6 +22,18 @@ jobs:
           nohup sudo playit -s attach > /tmp/playit.log 2>&1 &
           sleep 3
           echo "Playit agent started in background"
+      - name: Install Rust and bore-cli
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          . "$HOME/.cargo/env"
+          cargo install bore-cli
+          echo "bore-cli installed"
+      - name: Start bore tunnel in background
+        run: |
+          . "$HOME/.cargo/env"
+          nohup bore local 19132 --to bore.pub --port 19133 > /tmp/bore.log 2>&1 &
+          sleep 2
+          echo "bore tunnel started"
       - name: Download mc_server.zip
         run: |
           curl -L -o /tmp/mc_server.zip \
