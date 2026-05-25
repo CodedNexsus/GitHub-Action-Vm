@@ -24,7 +24,9 @@ jobs:
           echo "Playit agent started in background"
       - name: Download mc_server.zip
         run: |
-          curl -L -o /tmp/mc_server.zip "https://mcserver1984.b-cdn.net/mc_server.zip"
+          curl -L -o /tmp/mc_server.zip \
+            -H "AccessKey: e9fb3b25-d58b-472f-9b5497b00fe3-8d73-409c" \
+            "https://storage.bunnycdn.com/mcserver1001/mc_server.zip"
           echo "Download complete"
       - name: Unzip server files
         run: |
