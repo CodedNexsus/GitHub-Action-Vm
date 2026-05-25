@@ -15,13 +15,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y playit
-      - name: Explore claim commands
+      - name: Write secret key and start
         run: |
-          playit claim --help
-      - name: Stop default service, claim with token, start
-        run: |
-          sudo systemctl stop playit
-          playit claim secret 1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4 2>/dev/null || true
+          echo 'secret_key = "1b8d63caf9315b6bbefdbefc5419c64c4f38cf5c896c86b9b6268a7f6eb580c4"' | sudo tee /etc/playit/playit.toml
           sudo systemctl restart playit
           sleep 2
           sudo playit status
