@@ -32,6 +32,7 @@ jobs:
         run: |
           mkdir -p /tmp/mcserver
           unzip -o /tmp/mc_server.zip -d /tmp/mcserver
+          mv /tmp/mcserver/paper-*.jar /tmp/mcserver/paper.jar
           echo "Unzipped to /tmp/mcserver"
       - name: Run PaperMC server for 5h 30m
         timeout-minutes: 350
