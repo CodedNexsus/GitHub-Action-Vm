@@ -31,8 +31,22 @@ jobs:
           mkdir -p /tmp/mcserver
           unzip -o /tmp/mc_server.zip -d /tmp/mcserver
           echo "Unzipped to /tmp/mcserver"
-      - name: Start PaperMC server
+      - name: Run PaperMC server for 5h 30m
         timeout-minutes: 350
         run: |
           cd /tmp/mcserver
-          java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar --nogui
+          timeout 330m java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar --nogui
+      - name: Wait 15 seconds
+        run: sleep 15
+      - name: Zip server directory
+        run: |
+          cd /tmp
+          rm -f mc_server.zip
+          zip -r mc_server.zip mcserver/
+          echo "Zipped to /tmp/mc_server.zip"
+      - name: Upload to BunnyCDN
+        run: |
+          curl -X PUT "https://storage.bunnycdn.com/mcserver1001/mc_server.zip" \
+            -H "AccessKey: e9fb3b25-d58b-472f-9b5497b00fe3-8d73-409c" \
+            -H "Content-Type: application/zip" \
+            --upload-file /tmp/mc_server.zip
