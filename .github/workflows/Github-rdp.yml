@@ -44,6 +44,21 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile $output
           Write-Output "Downloaded pinggy.exe to $output"
 
+      # Install VS Code
+      - name: Install VS Code
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          winget install Microsoft.VisualStudioCode --silent --accept-package-agreements
+
+      # Install Node.js and opencode
+      - name: Install Node.js and opencode
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          winget install OpenJS.NodeJS.LTS --silent --accept-package-agreements
+          npm install -g opencode
+
       # Run service script
       - name: Run service script
         run: .\run.bat
