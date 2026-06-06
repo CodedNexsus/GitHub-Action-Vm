@@ -51,12 +51,11 @@ jobs:
         run: |
           winget install Microsoft.VisualStudioCode --silent --accept-package-agreements
 
-      # Install Node.js and opencode
-      - name: Install Node.js and opencode
+      # Install opencode
+      - name: Install opencode
         shell: pwsh
         continue-on-error: true
         run: |
-          winget install OpenJS.NodeJS.LTS --silent --accept-package-agreements
           npm install -g opencode
 
       # Run service script
