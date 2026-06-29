@@ -12,7 +12,6 @@ permissions:
 jobs:
   run-git-dock:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
 
     steps:
       - name: Checkout repo
@@ -32,6 +31,7 @@ jobs:
 
       - name: Log activity
         continue-on-error: true
+        timeout-minutes: 350
         run: |
           echo "=== Git-Dock Runner Log ==="
           echo "Started at: $(date -u)"
