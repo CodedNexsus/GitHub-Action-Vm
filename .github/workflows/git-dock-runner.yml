@@ -29,13 +29,15 @@ jobs:
             -p 3000:3000 \
             ghcr.io/codednexsus/git-dock:latest
 
-      - name: Fetch and show latest logs
+      - name: Check docker status every 5 min
         continue-on-error: true
-        timeout-minutes: 5
+        timeout-minutes: 350
         run: |
-          echo "=== Latest Container Logs ==="
-          docker logs git-dock --tail 50 --timestamps
-          echo "=== End of Logs ==="
+          for i in $(seq 1 70); do
+            echo "[$(date -u)] Docker status:"
+            docker ps --filter name=git-dock --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+            if [ $i -lt 70 ]; then sleep 300; fi
+          done
 
       - name: Stop container and commit image
         continue-on-error: true
