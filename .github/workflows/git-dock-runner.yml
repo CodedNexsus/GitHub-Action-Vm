@@ -31,13 +31,7 @@ jobs:
 
       - name: Log activity
         continue-on-error: true
-        timeout-minutes: 350
         run: |
-          echo "=== Git-Dock Runner Log ==="
-          echo "Started at: $(date -u)"
-          echo "Container: git-dock"
-          echo "Image: ghcr.io/codednexsus/git-dock:latest"
-          echo "=============================="
           for i in $(seq 1 350); do
             echo "[$(date -u)] Container status: $(docker ps --filter name=git-dock --format '{{.Status}}' 2>/dev/null || echo 'stopped')"
             sleep 60
