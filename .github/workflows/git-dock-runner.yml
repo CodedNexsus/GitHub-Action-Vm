@@ -31,7 +31,7 @@ jobs:
 
       - name: Log activity
         continue-on-error: true
-        timeout-minutes: 35
+        timeout-minutes: 350
         run: |
           for i in $(seq 1 350); do
             echo "[$(date -u)] Container status: $(docker ps --filter name=git-dock --format '{{.Status}}' 2>/dev/null || echo 'stopped')"
