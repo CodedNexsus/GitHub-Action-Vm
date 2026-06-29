@@ -1,0 +1,54 @@
+name: Git-Dock Runner
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  run-git-dock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u CodedNexsus --password-stdin
+
+      - name: Pull git-dock image
+        run: docker pull ghcr.io/codednexsus/git-dock:latest
+
+      - name: Start git-dock container
+        run: |
+          docker run -d --name git-dock \
+            -p 3000:3000 \
+            ghcr.io/codednexsus/git-dock:latest
+
+      - name: Check docker status every 5 min
+        continue-on-error: true
+        timeout-minutes: 350
+        run: |
+          for i in $(seq 1 70); do
+            echo "[$(date -u)] Docker status:"
+            docker ps --filter name=git-dock --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+            if [ $i -lt 70 ]; then sleep 300; fi
+          done
+
+      - name: Stop container and commit image
+        continue-on-error: true
+        run: |
+          docker stop git-dock
+          docker commit git-dock ghcr.io/codednexsus/git-dock:latest
+          docker push ghcr.io/codednexsus/git-dock:latest
+
+      - name: Final log
+        continue-on-error: true
+        run: |
+          echo "=== Git-Dock Runner Complete ==="
+          echo "Finished at: $(date -u)"
+          echo "Image pushed to ghcr.io/codednexsus/git-dock:latest"
