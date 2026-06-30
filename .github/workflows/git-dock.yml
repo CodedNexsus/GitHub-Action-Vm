@@ -23,6 +23,11 @@ jobs:
       - name: Pull git-dock image
         run: docker pull ghcr.io/codednexsus/git-dock:latest
 
+      - name: Print image SHA256
+        run: |
+          DIGEST=$(docker inspect ghcr.io/codednexsus/git-dock:latest --format '{{index .RepoDigests 0}}')
+          echo "Pulled image digest: $DIGEST"
+
       - name: Start git-dock container
         run: |
           docker run -d --name git-dock \
