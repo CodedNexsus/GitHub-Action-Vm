@@ -23,11 +23,22 @@ jobs:
       - name: Pull git-dock image
         run: docker pull ghcr.io/codednexsus/git-dock:latest
 
+      - name: Print image SHA256
+        run: |
+          DIGEST=$(docker inspect ghcr.io/codednexsus/git-dock:latest --format '{{index .RepoDigests 0}}')
+          echo "Pulled image digest: $DIGEST"
+
       - name: Start git-dock container
         run: |
           docker run -d --name git-dock \
             -p 3000:3000 \
             ghcr.io/codednexsus/git-dock:latest
+
+      - name: Verify SSH tunnel
+        run: |
+          sleep 5
+          docker exec git-dock pgrep -x autossh && echo "autossh is running" || echo "autossh NOT running - tunnel failed"
+          docker exec git-dock ss -tlnp 2>/dev/null || docker exec git-dock netstat -tlnp 2>/dev/null || echo "cannot check listening ports"
 
       - name: Check docker status every 5 min
         continue-on-error: true
